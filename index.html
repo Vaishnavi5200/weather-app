@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SkyPulse — Weather App</title>
+  <!-- Google Fonts: Outfit (display) + Noto Sans (body) -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Animated aurora background layers -->
+  <div class="bg-layer" id="bgLayer">
+    <div class="aurora a1"></div>
+    <div class="aurora a2"></div>
+    <div class="aurora a3"></div>
+  </div>
+
+  <!-- Main app wrapper -->
+  <div class="app-wrap">
+
+    <!-- ── HEADER ── -->
+    <header class="app-header">
+      <div class="logo">
+        <span class="logo-icon">🌤</span>
+        <span class="logo-text">SkyPulse</span>
+      </div>
+      <div class="header-date" id="headerDate"></div>
+    </header>
+
+    <!-- ── SEARCH BAR ── -->
+    <section class="search-section">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input
+          type="text"
+          id="cityInput"
+          class="search-input"
+          placeholder="Search city... (e.g. Mumbai, London)"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button class="search-btn" id="searchBtn" aria-label="Search weather">
+          <span class="btn-text">Search</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </div>
+      <!-- Error message shown when city is not found -->
+      <div class="error-msg" id="errorMsg">
+        <span class="error-icon">⚠️</span>
+        <span id="errorText">City not found. Please check the spelling and try again.</span>
+      </div>
+    </section>
+
+    <!-- ── LOADING SPINNER ── -->
+    <div class="loader-wrap" id="loaderWrap">
+      <div class="loader"></div>
+      <p class="loader-text">Fetching weather data...</p>
+    </div>
+
+    <!-- ── WEATHER RESULT (hidden until data loads) ── -->
+    <main class="weather-result" id="weatherResult">
+
+      <!-- City name & country -->
+      <div class="city-header">
+        <h1 class="city-name" id="cityName">—</h1>
+        <span class="country-badge" id="countryBadge"></span>
+      </div>
+      <p class="city-datetime" id="cityDatetime"></p>
+
+      <!-- Hero temperature card -->
+      <div class="hero-card glass-card">
+        <div class="hero-left">
+          <div class="weather-emoji" id="weatherEmoji">☁️</div>
+          <div class="temp-wrap">
+            <span class="temp-value" id="tempValue">--</span>
+            <span class="temp-unit">°C</span>
+          </div>
+          <p class="weather-desc" id="weatherDesc">—</p>
+        </div>
+        <div class="hero-right">
+          <div class="feels-like">
+            <span class="fl-label">Feels like</span>
+            <span class="fl-value" id="feelsLike">--°C</span>
+          </div>
+          <div class="temp-range" id="tempRange"></div>
+        </div>
+      </div>
+
+      <!-- Stats grid: 4 cards -->
+      <div class="stats-grid">
+
+        <div class="stat-card glass-card">
+          <div class="stat-icon">💧</div>
+          <div class="stat-info">
+            <span class="stat-label">Humidity</span>
+            <span class="stat-value" id="humidity">--%</span>
+          </div>
+          <div class="stat-bar-wrap">
+            <div class="stat-bar" id="humidityBar"></div>
+          </div>
+        </div>
+
+        <div class="stat-card glass-card">
+          <div class="stat-icon">💨</div>
+          <div class="stat-info">
+            <span class="stat-label">Wind Speed</span>
+            <span class="stat-value" id="windSpeed">-- km/h</span>
+          </div>
+          <div class="wind-dots" id="windDots"></div>
+        </div>
+
+        <div class="stat-card glass-card">
+          <div class="stat-icon">👁️</div>
+          <div class="stat-info">
+            <span class="stat-label">Visibility</span>
+            <span class="stat-value" id="visibility">-- km</span>
+          </div>
+        </div>
+
+        <div class="stat-card glass-card">
+          <div class="stat-icon">🌡️</div>
+          <div class="stat-info">
+            <span class="stat-label">Pressure</span>
+            <span class="stat-value" id="pressure">-- hPa</span>
+          </div>
+        </div>
+
+        <div class="stat-card glass-card">
+          <div class="stat-icon">🌅</div>
+          <div class="stat-info">
+            <span class="stat-label">Sunrise</span>
+            <span class="stat-value" id="sunrise">--:--</span>
+          </div>
+        </div>
+
+        <div class="stat-card glass-card">
+          <div class="stat-icon">🌇</div>
+          <div class="stat-info">
+            <span class="stat-label">Sunset</span>
+            <span class="stat-value" id="sunset">--:--</span>
+          </div>
+        </div>
+
+      </div><!-- /stats-grid -->
+
+    </main><!-- /weather-result -->
+
+  </div><!-- /app-wrap -->
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    Powered by <a href="https://openweathermap.org" target="_blank" rel="noopener">OpenWeatherMap</a>
+    &nbsp;·&nbsp; Built with ❤️ using HTML, CSS & JS
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

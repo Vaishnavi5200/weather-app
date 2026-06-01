@@ -1,0 +1,570 @@
+/* =============================================
+   style.css — SkyPulse Weather App
+   =============================================
+   CONTENTS
+   1. Variables & Reset
+   2. Background & Aurora
+   3. App Layout
+   4. Header
+   5. Search
+   6. Loader
+   7. Weather Result
+   8. Hero Card
+   9. Stats Grid
+   10. Footer
+   11. Animations
+   12. Responsive
+============================================= */
+
+/* ── 1. VARIABLES & RESET ── */
+:root {
+  --font-head: 'Outfit', sans-serif;
+  --font-body: 'Noto Sans', sans-serif;
+
+  /* Glass card */
+  --glass-bg:     rgba(255, 255, 255, 0.07);
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-shadow: 0 8px 48px rgba(0, 0, 0, 0.35);
+  --blur:         blur(18px);
+
+  /* Text */
+  --text-main: #f0f4ff;
+  --text-sub:  rgba(240, 244, 255, 0.62);
+  --text-dim:  rgba(240, 244, 255, 0.35);
+
+  /* Accent */
+  --accent: #7dd3fc;
+  --accent2: #fbbf24;
+
+  --radius: 20px;
+  --radius-sm: 12px;
+  --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Aurora colors — change with JS per weather */
+  --aurora1: #0f2460;
+  --aurora2: #1a1060;
+  --aurora3: #0a3040;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow-x: hidden;
+  background: #060b1a;
+}
+
+/* ── 2. BACKGROUND & AURORA ── */
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  transition: background 1.5s ease;
+}
+
+.aurora {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.55;
+  animation: drift 14s ease-in-out infinite alternate;
+  transition: background 1.5s ease, width 1.5s, height 1.5s;
+}
+
+.a1 {
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, var(--aurora1), transparent 65%);
+  top: -200px; left: -200px;
+  animation-duration: 16s;
+}
+.a2 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, var(--aurora2), transparent 65%);
+  bottom: -150px; right: -150px;
+  animation-duration: 20s;
+  animation-delay: -7s;
+}
+.a3 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, var(--aurora3), transparent 65%);
+  top: 40%; left: 35%;
+  transform: translate(-50%, -50%);
+  animation-duration: 12s;
+  animation-delay: -3s;
+}
+
+@keyframes drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(30px, -30px) scale(1.05); }
+  100% { transform: translate(-20px, 20px) scale(0.97); }
+}
+
+/* ── 3. APP LAYOUT ── */
+.app-wrap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 720px;
+  padding: 40px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ── 4. HEADER ── */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon { font-size: 1.8rem; }
+
+.logo-text {
+  font-family: var(--font-head);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #f0f4ff, var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header-date {
+  font-size: 0.82rem;
+  color: var(--text-sub);
+  font-weight: 400;
+  letter-spacing: 0.03em;
+}
+
+/* ── 5. SEARCH ── */
+.search-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--glass-bg);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--glass-border);
+  border-radius: 100px;
+  padding: 6px 6px 6px 18px;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  box-shadow: var(--glass-shadow);
+}
+
+.search-box:focus-within {
+  border-color: rgba(125, 211, 252, 0.5);
+  box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.1), var(--glass-shadow);
+}
+
+.search-icon { font-size: 1rem; margin-right: 4px; flex-shrink: 0; }
+
+.search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 0.97rem;
+  color: var(--text-main);
+  padding: 10px 4px;
+  min-width: 0;
+}
+
+.search-input::placeholder { color: var(--text-dim); }
+
+.search-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 24px;
+  background: linear-gradient(135deg, var(--accent) 0%, #38bdf8 100%);
+  color: #05101e;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 0.92rem;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.search-btn:hover {
+  transform: scale(1.04);
+  box-shadow: 0 4px 20px rgba(125, 211, 252, 0.4);
+}
+.search-btn:active { transform: scale(0.97); }
+
+.btn-arrow {
+  display: inline-block;
+  transition: transform var(--transition);
+}
+.search-btn:hover .btn-arrow { transform: translateX(4px); }
+
+/* Error message */
+.error-msg {
+  display: none;  /* shown by JS */
+  align-items: center;
+  gap: 8px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 12px 18px;
+  font-size: 0.88rem;
+  color: #fca5a5;
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-8px); }
+  40%       { transform: translateX(8px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+
+/* ── 6. LOADER ── */
+.loader-wrap {
+  display: none;  /* shown by JS */
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 60px 0;
+}
+
+.loader {
+  width: 48px; height: 48px;
+  border: 3px solid var(--glass-border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loader-text {
+  color: var(--text-sub);
+  font-size: 0.88rem;
+  letter-spacing: 0.04em;
+  animation: pulse-text 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-text {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* ── 7. WEATHER RESULT ── */
+.weather-result {
+  display: none;  /* shown by JS */
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeSlideUp 0.6s ease forwards;
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* City name header */
+.city-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.city-name {
+  font-family: var(--font-head);
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.country-badge {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  padding: 5px 14px;
+  border-radius: 100px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-sub);
+  letter-spacing: 0.06em;
+}
+
+.city-datetime {
+  font-size: 0.85rem;
+  color: var(--text-sub);
+  margin-top: -8px;
+}
+
+/* Glass card base */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--glass-shadow);
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+.glass-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255,255,255,0.22);
+  box-shadow: 0 16px 60px rgba(0,0,0,0.4);
+}
+
+/* ── 8. HERO CARD ── */
+.hero-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 36px 40px;
+  gap: 24px;
+}
+
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.weather-emoji {
+  font-size: 5rem;
+  line-height: 1;
+  filter: drop-shadow(0 4px 20px rgba(255,255,255,0.2));
+  animation: float-emoji 4s ease-in-out infinite;
+}
+
+@keyframes float-emoji {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50%       { transform: translateY(-10px) rotate(3deg); }
+}
+
+.temp-wrap {
+  display: flex;
+  align-items: flex-start;
+  line-height: 1;
+}
+
+.temp-value {
+  font-family: var(--font-head);
+  font-size: clamp(3.5rem, 10vw, 6rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  background: linear-gradient(135deg, #ffffff, var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.temp-unit {
+  font-family: var(--font-head);
+  font-size: 1.8rem;
+  font-weight: 300;
+  color: var(--text-sub);
+  margin-top: 12px;
+}
+
+.weather-desc {
+  font-size: 1rem;
+  color: var(--text-sub);
+  text-transform: capitalize;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.feels-like {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.fl-label {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.fl-value {
+  font-family: var(--font-head);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--accent2);
+}
+
+.temp-range {
+  font-size: 0.82rem;
+  color: var(--text-sub);
+  text-align: right;
+  line-height: 1.6;
+}
+
+/* ── 9. STATS GRID ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.stat-card {
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stat-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.stat-value {
+  font-family: var(--font-head);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* Humidity progress bar */
+.stat-bar-wrap {
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.stat-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #38bdf8);
+  border-radius: 2px;
+  transition: width 1s cubic-bezier(0.4,0,0.2,1) 0.4s;
+  width: 0;
+}
+
+/* Wind speed dots */
+.wind-dots {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.wind-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.2;
+  transition: opacity 0.3s;
+}
+
+.wind-dot.active { opacity: 1; }
+
+/* ── 10. FOOTER ── */
+.app-footer {
+  position: relative;
+  z-index: 1;
+  padding: 20px 24px 32px;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.app-footer a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity var(--transition);
+}
+
+.app-footer a:hover { opacity: 0.7; }
+
+/* ── 11. ANIMATIONS ── */
+/* Staggered card entrance */
+.stat-card:nth-child(1) { animation: fadeSlideUp 0.5s ease 0.05s both; }
+.stat-card:nth-child(2) { animation: fadeSlideUp 0.5s ease 0.10s both; }
+.stat-card:nth-child(3) { animation: fadeSlideUp 0.5s ease 0.15s both; }
+.stat-card:nth-child(4) { animation: fadeSlideUp 0.5s ease 0.20s both; }
+.stat-card:nth-child(5) { animation: fadeSlideUp 0.5s ease 0.25s both; }
+.stat-card:nth-child(6) { animation: fadeSlideUp 0.5s ease 0.30s both; }
+
+/* ── 12. RESPONSIVE ── */
+@media (max-width: 600px) {
+  .app-wrap { padding: 28px 16px 16px; }
+
+  .hero-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 28px 24px;
+  }
+
+  .hero-right { align-items: flex-start; }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .search-btn .btn-text { display: none; }
+  .search-btn { padding: 11px 16px; }
+
+  .logo-text { font-size: 1.2rem; }
+}
+
+@media (max-width: 380px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .temp-value { font-size: 3rem; }
+}
